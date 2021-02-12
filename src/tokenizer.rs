@@ -2,9 +2,9 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref num_regex: Regex = Regex::new(r"^([0-9]+(\.[0-9]*)?)|([0-9]*\.[0-9]+)").unwrap();
-    static ref whitespace_regex: Regex = Regex::new(r"^[\s]+").unwrap();
-    static ref operator_regex: Regex = Regex::new(r"^[+\-\*/\(\)]").unwrap();
+    static ref NUM_REGEX: Regex = Regex::new(r"^([0-9]+(\.[0-9]*)?)|([0-9]*\.[0-9]+)").unwrap();
+    static ref WHITESPACE_REGEX: Regex = Regex::new(r"^[\s]+").unwrap();
+    static ref OPERATOR_REGEX: Regex = Regex::new(r"^[+\-\*/\(\)]").unwrap();
 }
 
 #[derive(Debug)]
@@ -44,14 +44,14 @@ impl<'a> Iterator for Tokenizer<'a> {
     type Item = Token<'a>;
 
     fn next(&mut self) -> Option<Token<'a>> {
-        self.consume(&whitespace_regex);
-        if let Some((s, i)) = self.consume(&num_regex) {
+        self.consume(&WHITESPACE_REGEX);
+        if let Some((s, i)) = self.consume(&NUM_REGEX) {
             if let Ok(n) = s.parse() {
                 return Some(Token::Number(i, s, n));
             } else {
                 return Some(Token::InvalidToken(i, s));
             }
-        } else if let Some((s, i)) = self.consume(&operator_regex) {
+        } else if let Some((s, i)) = self.consume(&OPERATOR_REGEX) {
             match s {
                 "+" => return Some(Token::AdditionOperator(i, s)),
                 "-" => return Some(Token::SubtractionOperator(i, s)),

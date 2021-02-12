@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::cmp::{max, min};
 
 lazy_static! {
     static ref NUM_REGEX: Regex = Regex::new(r"^([0-9]+(\.[0-9]*)?)|([0-9]*\.[0-9]+)").unwrap();
@@ -20,7 +21,9 @@ pub enum Token<'a> {
 }
 
 pub struct Tokenizer<'a> {
+    ///The tokenizer parses this string.
     expr: &'a str,
+    ///The starting index used to 'consume' the next token in the string.
     index: usize,
 }
 
@@ -38,19 +41,40 @@ impl<'a> Tokenizer<'a> {
             None
         }
     }
+    ///Create a string showing the character at self.index and a few surrounding characters for the
+    ///purpose of deliniating an erroneous character in the string.
+    fn error_slice(&self) -> &'a str {
+        const NUM_SURROUNDING_CHARS: usize = 5;
+        //clamp the start and end indexes to the bounds of the expr string
+        let start_index = max(self.index - NUM_SURROUNDING_CHARS, 0);
+        let end_index = min(self.index + NUM_SURROUNDING_CHARS + 1, self.expr.len());
+
+        &self.expr[start_index..end_index]
+    }
 }
 
 impl<'a> Iterator for Tokenizer<'a> {
     type Item = Token<'a>;
 
     fn next(&mut self) -> Option<Token<'a>> {
+        //First, see if the current index is within the expression string being parsed.
+        if self.index > self.expr.len() {
+            //The tokenizer has reached the end of the string and needs to stop tokenizing.
+            return None;
+        }
+        //The goal here is to ignore any whitespace, so consume it if there is any
         self.consume(&WHITESPACE_REGEX);
+
+        //Here, check if the characters next in the string match the regex for detecting numbers, if so, try to parse it.
+        //This should always pass because the regex guarantees a valid floating point number is parsed.
         if let Some((s, i)) = self.consume(&NUM_REGEX) {
             if let Ok(n) = s.parse() {
                 return Some(Token::Number(i, s, n));
             } else {
+                //Not really plausable unless a mistake in the regex exists
                 return Some(Token::InvalidToken(i, s));
             }
+        //The only other tokens possible are single character operator/parenthesis tokens, consume them if they exist
         } else if let Some((s, i)) = self.consume(&OPERATOR_REGEX) {
             match s {
                 "+" => return Some(Token::AdditionOperator(i, s)),
@@ -62,7 +86,7 @@ impl<'a> Iterator for Tokenizer<'a> {
                 _ => return Some(Token::InvalidToken(i, s)),
             }
         }
-
-        None
+        //Here, there is a
+        Some(Token::InvalidToken(self.index, self.error_slice()))
     }
 }

@@ -16,7 +16,7 @@ fn main() {
     //To solve the expression, it must first be parsed into tokens which can be fed into a
     //recursive expression solver. This will also identify any errors that exist within the
     //passed expression
-    let mut token_stream = Tokenizer::new(&expr);
+    let token_stream = Tokenizer::new(&expr);
 
-    let _answer = solver::solve(&mut token_stream);
+    let _answer = solver::solve(&mut token_stream.peekable());
 }

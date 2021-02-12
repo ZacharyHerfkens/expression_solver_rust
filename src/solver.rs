@@ -1,4 +1,5 @@
 use super::tokenizer::{Token, Tokenizer};
+use std::iter::Peekable;
 
 #[derive(Eq, PartialOrd, PartialEq)]
 enum Operator {
@@ -8,7 +9,7 @@ enum Operator {
     Sub,
 }
 
-pub fn solve<'a, T: Iterator<Item = Token<'a>>>(tokens: T) -> Result<f64, String> {
+pub fn solve<'a, K: Iterator<Item = Token<'a>>>(tokens: &mut Peekable<K>) -> Result<f64, String> {
     Ok(0.0)
 }
 

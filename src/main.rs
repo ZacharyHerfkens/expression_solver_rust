@@ -1,5 +1,6 @@
 mod tokenizer;
-use tokenizer::{Token, Tokenizer};
+mod solver;
+use tokenizer::Tokenizer;
 
 fn main() {
     let mut args = std::env::args().collect::<Vec<_>>();
@@ -11,9 +12,7 @@ fn main() {
     let expr = args.pop().unwrap();
 
     //tokenize the expression
-    let token_stream = Tokenizer::new(&expr);
+    let mut token_stream = Tokenizer::new(&expr);
 
-    for t in token_stream {
-        println!("{:?}", t);
-    }
+    let answer = solver::solve(&mut token_stream);
 }

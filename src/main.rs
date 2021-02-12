@@ -11,7 +11,6 @@ fn main() {
 
     let expr = args.pop().unwrap();
 
-    //tokenize the expression
     let mut token_stream = Tokenizer::new(&expr);
 
     let answer = solver::solve(&mut token_stream);

@@ -1,5 +1,5 @@
-use regex::Regex;
 use lazy_static::lazy_static;
+use regex::Regex;
 
 lazy_static! {
     static ref num_regex: Regex = Regex::new(r"^([0-9]+(\.[0-9]*)?)|([0-9]*\.[0-9]+)").unwrap();
@@ -21,15 +21,12 @@ pub enum Token<'a> {
 
 pub struct Tokenizer<'a> {
     expr: &'a str,
-    index: usize
+    index: usize,
 }
 
 impl<'a> Tokenizer<'a> {
     pub fn new(expr: &str) -> Tokenizer {
-        Tokenizer {
-            expr,
-            index: 0
-        }
+        Tokenizer { expr, index: 0 }
     }
     fn consume(&mut self, m: &Regex) -> Option<(&'a str, usize)> {
         let start = self.index;
@@ -41,7 +38,6 @@ impl<'a> Tokenizer<'a> {
             None
         }
     }
-
 }
 
 impl<'a> Iterator for Tokenizer<'a> {
@@ -63,7 +59,7 @@ impl<'a> Iterator for Tokenizer<'a> {
                 "/" => return Some(Token::DivisionOperator(i, s)),
                 "(" => return Some(Token::OpenParenthesis(i, s)),
                 ")" => return Some(Token::CloseParenthesis(i, s)),
-                _   => return Some(Token::InvalidToken(i, s))
+                _ => return Some(Token::InvalidToken(i, s)),
             }
         }
 

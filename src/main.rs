@@ -14,7 +14,7 @@ fn main() {
     let expr = args.pop().unwrap();
 
     //To solve the expression, it must first be parsed into tokens which can be fed into a
-    //recursive expression solver which will also identify any errors that exist within the
+    //recursive expression solver. This will also identify any errors that exist within the
     //passed expression
     let mut token_stream = Tokenizer::new(&expr);
 

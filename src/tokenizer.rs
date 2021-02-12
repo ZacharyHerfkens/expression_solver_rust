@@ -27,7 +27,7 @@ pub struct Tokenizer<'a> {
 impl<'a> Tokenizer<'a> {
     pub fn new(expr: &str) -> Tokenizer {
         Tokenizer {
-            expr: expr,
+            expr,
             index: 0
         }
     }
@@ -36,9 +36,9 @@ impl<'a> Tokenizer<'a> {
         if let Some(k) = m.find(&self.expr[self.index..]) {
             let s = k.as_str();
             self.index = k.end() + start;
-            return Some((s, start));
+            Some((s, start))
         } else {
-            return None;
+            None
         }
     }
 
@@ -67,6 +67,6 @@ impl<'a> Iterator for Tokenizer<'a> {
             }
         }
 
-        return None;
+        None
     }
 }

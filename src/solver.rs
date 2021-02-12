@@ -10,8 +10,7 @@ enum Operator {
 }
 
 pub fn solve<'a, T: Iterator<Item = Token<'a>>>(tokens: T) -> Result<f64, String> {
-    
-
+    Ok(0.0)
 }
 
 fn match_operator(tokens: &mut Tokenizer) -> Result<Operator, String> {
